@@ -62,7 +62,7 @@ public class GotoTest {
             try {
                 String sql = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.bigquery);
-                SQLStatement stmt = parser.parseStatement();
+                parser.parseStatementList();
             } catch (Throwable e) {
                 errorCount++;
                 e.printStackTrace();
