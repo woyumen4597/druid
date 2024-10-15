@@ -18,23 +18,23 @@ import java.util.List;
 import java.util.Map;
 
 public class BusinessTest {
-    static File PREFIX_SQL_DIR = new File("/Users/jinrongchuan/Documents/work/goto/1000plussqls/");
-    static File PREFIX_LOGS_DIR = new File("/Users/jinrongchuan/Documents/work/goto/logs/");
+    static File PREFIX_SQL_DIR = new File("/Users/jinrongchuan/Documents/work/mekari/dag_dw_copy/");
+    static File PREFIX_LOGS_DIR = new File("/Users/jinrongchuan/Documents/work/mekari/logs/");
 
     @Test
     public void gotoTest() throws FileNotFoundException {
-        File outputFile = new File(PREFIX_LOGS_DIR, "goto_druid_scan.log");
-        dirTest(PREFIX_SQL_DIR, outputFile, DbType.bigquery);
+        File outputFile = new File(PREFIX_LOGS_DIR, "mekari_druid_scan.log");
+        dirTest(PREFIX_SQL_DIR, outputFile, DbType.athena);
     }
 
 
     @Test
     public void singleFileTest() throws IOException {
-        String fileName = "data-gojek-id-mart.care_unit.detail_manual_agent_case_handling_time_per_department_daily.sql";
+        String fileName = "master_employee_talenta.sql";
         File outputFile = new File(PREFIX_LOGS_DIR, fileName.replace(".sql", "") + ".log");
         File file = findFile(fileName);
         if (file != null) {
-            fileTest(file, outputFile);
+            fileTest(file, outputFile, DbType.athena);
         } else {
             System.err.println("Can not find file: " + fileName);
         }
@@ -84,7 +84,7 @@ public class BusinessTest {
         }
     }
 
-    public static void fileTest(File file, File outputFile) throws IOException {
+    public static void fileTest(File file, File outputFile,DbType dbType) throws IOException {
         String sql = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         if (sql.equals("No query")) {
             return;
@@ -93,7 +93,7 @@ public class BusinessTest {
             PrintStream fileOut = new PrintStream(outputFile);
             System.setOut(fileOut);
             System.setErr(fileOut);
-            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.bigquery);
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
             List<SQLStatement> stmt = parser.parseStatementList();
         } catch (Throwable e) {
             System.out.println("SQL file: " + file.getName());
